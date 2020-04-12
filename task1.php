@@ -33,15 +33,23 @@ if ($result->num_rows > 0) {
 }
 
 // Generate grouped table
-?><table border="1" cellpadding="4" cellspacing="0"><?php
+?><table border="1" cellpadding="4" cellspacing="0">
+  <tr><th>Order&nbsp;ID</th><th>Category</th><th>Ship&nbsp;Date</th><th>Comments</th></tr><?php
 foreach($table as $grp_k => $grp_v) {
-  foreach($grp_v as $k => $v) {?>
+  foreach($grp_v as $k => $v) {
+    $datepos = strpos($v['comments'], 'Expected Ship Date: ');
+    $shipdate = '';
+    if($datepos !== false) {
+      $shipdate = substr($v['comments'], $datepos + 20, 9);
+    }
+    ?>
     <tr><td><?php echo $v['orderid'];?></td>
     <td><strong><?php echo ucwords($grp_k);?></strong></td>
+    <td><?php echo $shipdate;?></td>
     <td><?php echo $v['comments'];?></td></tr>
     <?php
   }
-  ?><tr><td colspan="3">&nbsp;</td></tr><?php
+  ?><tr><td colspan="4">&nbsp;</td></tr><?php
 }?>
 <table><?php
 
