@@ -8,8 +8,10 @@ $result = $db->query($sql);
 
 if ($result->num_rows > 0) {
   while($row = $result->fetch_assoc()) {
-    if(strpos($row['comments'], 'Expected Ship Date: ') !== false) {
-      echo "Found Ship Date on id $row[orderid].<br>";
+    $datepos = strpos($row['comments'], 'Expected Ship Date: ');
+    $shipdate = substr($row['comments'], $datepos + 20, 9);
+    if($datepos !== false) {
+      echo "Found Ship Date $shipdate on id $row[orderid].<br>";
     }
   }
 } else {
