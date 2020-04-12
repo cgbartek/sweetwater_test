@@ -6,29 +6,44 @@ require "config.php";
 $sql = "SELECT orderid, comments FROM sweetwater_test";
 $result = $db->query($sql);
 
-$candy = [];
+$table = [];
+$table['candy'] = [];
+$table['call'] = [];
+$table['referred'] = [];
+$table['signature'] = [];
+$table['misc'] = [];
+
 if ($result->num_rows > 0) {
   while($row = $result->fetch_assoc()) {
-    if(stripos($row['comments'], 'candy') !== false || stripos($row['comments'], 'smarties') !== false) {
-      $candy[] = $row;
+    if(stripos($row['comments'], 'candy') !== false
+    || stripos($row['comments'], 'smarties') !== false) {
+      $table['candy'][] = $row;
     } else if(stripos($row['comments'], 'call') !== false) {
-      $call[] = $row;
+      $table['call'][] = $row;
     } else if(stripos($row['comments'], 'referred') !== false) {
-      $referred[] = $row;
+      $table['referred'][] = $row;
     } else if(stripos($row['comments'], 'signature') !== false) {
-      $signature[] = $row;
+      $table['signature'][] = $row;
     } else {
-      $misc[] = $row;
+      $table['misc'][] = $row;
     }
-    //echo "id: " . $row['orderid']. " - comments: " . $row['comments'] . "<br>";
   }
 } else {
   echo "No results.";
 }
 
-echo '<pre>';
-print_r($candy);
-echo '</pre>';
+// Generate grouped table
+?><table border="1" cellpadding="4" cellspacing="0"><?php
+foreach($table as $grp_k => $grp_v) {
+  foreach($grp_v as $k => $v) {?>
+    <tr><td><?php echo $v['orderid'];?></td>
+    <td><strong><?php echo ucwords($grp_k);?></strong></td>
+    <td><?php echo $v['comments'];?></td></tr>
+    <?php
+  }
+  ?><tr><td colspan="3">&nbsp;</td></tr><?php
+}?>
+<table><?php
 
 $db->close();
 
